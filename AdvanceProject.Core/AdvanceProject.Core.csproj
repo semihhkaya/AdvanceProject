@@ -6,10 +6,8 @@
 
   <ItemGroup>
     <Folder Include="Extensions\" />
-    <Folder Include="Hashing\" />
     <Folder Include="Helpers\" />
     <Folder Include="Middleware\" />
-    <Folder Include="Result\" />
   </ItemGroup>
 
 </Project>

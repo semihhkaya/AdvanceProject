@@ -30,7 +30,7 @@ namespace AdvanceProject.Bll.Concrete
 			if (user != null)
 			{
 				var userDto = _mapper.Map<Employee, EmployeeRegisterDTO>(user);
-				return new SuccessDataResult<EmployeeRegisterDTO>(userDto);
+				return new SuccessDataResult<EmployeeRegisterDTO>(userDto,"Kullanıcı mevcut");
 			}
 
 			// Kullanıcı bulunamadı

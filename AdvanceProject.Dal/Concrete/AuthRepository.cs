@@ -37,17 +37,17 @@ namespace AdvanceProject.Dal.Concrete
 			parameters.Add("@TitleID", employee.TitleId, DbType.Int32);
 			parameters.Add("@UpperEmployeeID", employee.UpperEmployeeId, DbType.Int32);
 			
-			var rowsAffected = Connection.Execute(sqlquery, parameters, Transaction);
+			var rowsAffected =  await Connection.ExecuteAsync(sqlquery, parameters, Transaction);
 
 			return rowsAffected > 0 ? employee : null;
 		}
 
-		public async Task<Employee> Login(string username, string password)
+		public async Task<Employee> Login(string email, string password)
 		{
 			
-			var sqlquery = "SELECT * FROM Employee WHERE Username = @Username";
+			var sqlquery = "SELECT * FROM Employee WHERE Email = @Email";
 			var parameters = new DynamicParameters();
-			parameters.Add("@Username", username, DbType.String);
+			parameters.Add("@Email", email, DbType.String);
 
 			var user = await Connection.QueryFirstOrDefaultAsync<Employee>(sqlquery, parameters, Transaction);
 
@@ -56,7 +56,6 @@ namespace AdvanceProject.Dal.Concrete
 			{
 				return null;
 			}
-
 			
 			return user;
 		}

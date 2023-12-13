@@ -10,14 +10,15 @@ namespace AdvanceProject.Core.Entities
     {
         public Payment()
         {
-            Advances = new HashSet<Advance>();
+            
         }
 
         public int Id { get; set; }
         public DateTime? DeterminedPaymentDate { get; set; }
         public int? FinanceManagerId { get; set; }
+        public int? AdvanceID { get; set; }
 
         public virtual Employee FinanceManager { get; set; }
-        public virtual ICollection<Advance> Advances { get; set; }
+        public virtual Advance Advance { get; set; }
     }
 }

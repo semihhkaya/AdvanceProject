@@ -14,6 +14,8 @@ namespace AdvanceProject.Bll.Mapper
 		public MapperProfile()
 		{
 			CreateMap<Employee, EmployeeRegisterDTO>().ReverseMap();
+			CreateMap<Employee, EmployeeSelectDTO>().ReverseMap();
+			CreateMap<Employee, EmployeeLoginDTO>().ReverseMap();
 		}
 	}
 }

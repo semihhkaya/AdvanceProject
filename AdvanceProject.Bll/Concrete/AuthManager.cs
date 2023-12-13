@@ -24,6 +24,23 @@ namespace AdvanceProject.Bll.Concrete
 			_employeeManager = employeeManager;
 		}
 
+        public async Task<IDataResult<EmployeeSelectDTO>> Login(EmployeeLoginDTO dto)
+        {
+            
+            var user = await _unitOfWork.AuthRepository.Login(dto.Email, dto.Password);
+
+            // Kullanıcı bulunamazsa veya şifre kontrolü başarısızsa->
+            if (user == null)
+            {
+                return new ErrorDataResult<EmployeeSelectDTO>("E-posta veya şifre hatalı.");
+            }
+
+            var entity = _mapper.Map<Employee, EmployeeSelectDTO>(user);
+            
+
+            return new SuccessDataResult<EmployeeSelectDTO>(entity, "Giriş başarılı");
+        }
+
         public async Task<IDataResult<EmployeeRegisterDTO>> Register(EmployeeRegisterDTO dto, string password)
         {
             

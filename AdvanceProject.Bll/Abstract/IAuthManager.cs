@@ -11,6 +11,7 @@ namespace AdvanceProject.Bll.Abstract
 	public interface IAuthManager
 	{
 		Task<IDataResult<EmployeeRegisterDTO>> Register(EmployeeRegisterDTO dto,string password);
+		Task<IDataResult<EmployeeSelectDTO>> Login(EmployeeLoginDTO dto);
 		
 	}
 }

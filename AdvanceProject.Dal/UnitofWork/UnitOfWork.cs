@@ -1,4 +1,6 @@
-﻿using AdvanceProject.Dal.Helper;
+﻿using AdvanceProject.Dal.Abstract;
+using AdvanceProject.Dal.Concrete;
+using AdvanceProject.Dal.Helper;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,7 +18,8 @@ namespace AdvanceProject.Dal.UnitofWork
 
         private bool _dispose;
 
-        //buraya repolar eklenecek
+        private IAuthRepository _authRepository;
+        private IEmployeeRepository _employeeRepository;
 
 
         public UnitOfWork()
@@ -25,7 +28,14 @@ namespace AdvanceProject.Dal.UnitofWork
             _connection.Open();
         }
 
-        
+        public IAuthRepository AuthRepository
+        {
+            get { return _authRepository ?? (_authRepository = new AuthRepository(_connection, _transaction)); }
+        }
+        public IEmployeeRepository EmployeeRepository
+        {
+            get { return _employeeRepository ?? (_employeeRepository = new EmployeeRepository(_connection, _transaction)); }
+        }
 
 
         public void BeginTransaction()

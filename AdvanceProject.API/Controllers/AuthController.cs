@@ -38,6 +38,7 @@ namespace AdvanceProject.API.Controllers
 			}
 			return BadRequest(data.Result.Message);
 		}
+
 		[HttpPost("~/api/login")]
 		public IActionResult Login([FromBody] EmployeeLoginDTO dto)
 		{

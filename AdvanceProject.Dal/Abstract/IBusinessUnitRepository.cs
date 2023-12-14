@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace AdvanceProject.Dal.Abstract
 {
-	public interface IEmployeeRepository
+	public interface IBusinessUnitRepository
 	{
-		Task<List<Employee>> GetAll();
-		Task<Employee> GetUserByEmail(string email);
-		
+		Task<List<BusinessUnit>> GetAll();
 	}
 }

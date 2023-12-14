@@ -29,7 +29,7 @@ namespace AdvanceProject.Bll.Concrete
             
             var user = await _unitOfWork.AuthRepository.Login(dto.Email, dto.Password);
 
-            // Kullanıcı bulunamazsa veya şifre kontrolü başarısızsa->
+            
             if (user == null)
             {
                 return new ErrorDataResult<EmployeeSelectDTO>("E-posta veya şifre hatalı.");

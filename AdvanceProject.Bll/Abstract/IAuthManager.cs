@@ -12,6 +12,7 @@ namespace AdvanceProject.Bll.Abstract
 	{
 		Task<IDataResult<EmployeeRegisterDTO>> Register(EmployeeRegisterDTO dto,string password);
 		Task<IDataResult<EmployeeSelectDTO>> Login(EmployeeLoginDTO dto);
-		
+
+
 	}
 }

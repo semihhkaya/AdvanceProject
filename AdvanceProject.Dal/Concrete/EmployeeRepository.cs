@@ -16,6 +16,16 @@ namespace AdvanceProject.Dal.Concrete
 		public EmployeeRepository(IDbConnection connection, IDbTransaction transaction) : base(connection, transaction)
 		{
 		}
+
+		public async Task<List<Employee>> GetAll()
+		{
+			var sqlQuery = "SELECT * FROM Employee";
+
+			var parameters = new DynamicParameters();
+			var data = await Connection.QueryAsync<Employee>(sqlQuery, parameters, Transaction);
+			return data.ToList();
+		}
+
 		public async Task<Employee> GetUserByEmail(string email)
 		{
 			var sqlquery = "SELECT * FROM Employee WHERE Email = @Email";

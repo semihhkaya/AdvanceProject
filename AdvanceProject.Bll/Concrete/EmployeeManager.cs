@@ -36,5 +36,19 @@ namespace AdvanceProject.Bll.Concrete
 			// Kullanıcı bulunamadı
 			return new ErrorDataResult<EmployeeRegisterDTO>("Kullanıcı bulunamadı.");
 		}
+
+		public async Task<IDataResult<List<EmployeeSelectDTO>>> GetAll()
+		{
+			var data = await _unitOfWork.EmployeeRepository.GetAll();
+			if (data == null)
+			{
+				return new ErrorDataResult<List<EmployeeSelectDTO>>("Veri bulunamadı");
+			}
+
+			var entity = _mapper.Map<List<Employee>, List<EmployeeSelectDTO>>(data);
+
+
+			return new SuccessDataResult<List<EmployeeSelectDTO>>(entity, "Giriş başarılı");
+		}
 	}
 }

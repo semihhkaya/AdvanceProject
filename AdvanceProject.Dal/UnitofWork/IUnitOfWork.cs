@@ -11,6 +11,8 @@ namespace AdvanceProject.Dal.UnitofWork
     {
         IAuthRepository AuthRepository { get; }
         IEmployeeRepository EmployeeRepository { get; }
+        IBusinessUnitRepository BusinessUnitRepository { get; }
+        ITitleRepository TitleRepository { get; }
         
         
         void Commit();

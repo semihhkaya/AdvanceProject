@@ -20,6 +20,8 @@ namespace AdvanceProject.Dal.UnitofWork
 
         private IAuthRepository _authRepository;
         private IEmployeeRepository _employeeRepository;
+        private IBusinessUnitRepository _businessUnitRepository;
+        private ITitleRepository _titleRepository;
 
 
         public UnitOfWork()
@@ -37,6 +39,15 @@ namespace AdvanceProject.Dal.UnitofWork
             get { return _employeeRepository ?? (_employeeRepository = new EmployeeRepository(_connection, _transaction)); }
         }
 
+        public IBusinessUnitRepository BusinessUnitRepository
+        {
+            get { return _businessUnitRepository ?? (_businessUnitRepository = new BusinessUnitRepository(_connection, _transaction)); }
+        }
+
+        public ITitleRepository TitleRepository
+        {
+            get { return _titleRepository ?? (_titleRepository = new TitleRepository(_connection, _transaction)); }
+        }
 
         public void BeginTransaction()
         {

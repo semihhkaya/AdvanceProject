@@ -41,6 +41,8 @@ namespace AdvanceProject.API
             });
             services.AddScoped<IAuthManager, AuthManager>();
             services.AddScoped<IEmployeeManager, EmployeeManager>();
+            services.AddScoped<IBusinessUnitManager, BusinessUnitManager>();
+            services.AddScoped<ITitleManager, TitleManager>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddScoped<MyMapper>();
 

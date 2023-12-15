@@ -17,52 +17,49 @@ namespace AdvanceProject.Bll.Concrete
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IEmployeeManager _employeeManager;
 		private readonly MyMapper _mapper;
-		public AuthManager(IUnitOfWork unitOfWork, MyMapper mapper,IEmployeeManager employeeManager)
+		public AuthManager(IUnitOfWork unitOfWork, MyMapper mapper, IEmployeeManager employeeManager)
 		{
 			_unitOfWork = unitOfWork;
 			_mapper = mapper;
 			_employeeManager = employeeManager;
 		}
 
-        public async Task<IDataResult<EmployeeSelectDTO>> Login(EmployeeLoginDTO dto)
-        {
-            
-            var user = await _unitOfWork.AuthRepository.Login(dto.Email, dto.Password);
+		public async Task<IDataResult<EmployeeSelectDTO>> Login(EmployeeLoginDTO dto)
+		{
+			var user = await _unitOfWork.AuthRepository.Login(dto.Email, dto.Password);
 
-            
-            if (user == null)
-            {
-                return new ErrorDataResult<EmployeeSelectDTO>("E-posta veya şifre hatalı.");
-            }
+			if (user == null)
+			{
+				return new ErrorDataResult<EmployeeSelectDTO>("E-posta veya şifre hatalı.");
+			}
 
-            var entity = _mapper.Map<Employee, EmployeeSelectDTO>(user);
-            
+			var entity = _mapper.Map<Employee, EmployeeSelectDTO>(user);
 
-            return new SuccessDataResult<EmployeeSelectDTO>(entity, "Giriş başarılı");
-        }
+			return new SuccessDataResult<EmployeeSelectDTO>(entity, "Giriş başarılı");
+		}
 
-        public async Task<IDataResult<EmployeeRegisterDTO>> Register(EmployeeRegisterDTO dto, string password)
-        {
-            
-            //var existingUser = await _employeeManager.GetUserByMail(dto.Email);
-            //if (existingUser.Success)
-            //{
-            //    //Kullanıcı zaten varsa->
-            //    return new ErrorDataResult<EmployeeRegisterDTO>("Bu e-posta adresi zaten kayıtlı.");
-            //}
+		public async Task<IDataResult<EmployeeRegisterDTO>> Register(EmployeeRegisterDTO dto, string password)
+		{
 
-            // Kullanıcıyı kaydet
-            var entity = _mapper.Map<EmployeeRegisterDTO, Employee>(dto);
-            var data = await _unitOfWork.AuthRepository.Register(entity, password);
+			//var existingUser = await _employeeManager.GetUserByMail(dto.Email);
+			//if (existingUser.Success)
+			//{
+			//    //Kullanıcı zaten varsa->
+			//    return new ErrorDataResult<EmployeeRegisterDTO>("Bu e-posta adresi zaten kayıtlı.");
+			//}
 
-            if (data == null)
-            {
-                return new ErrorDataResult<EmployeeRegisterDTO>("Bir hata oluştu");
-            }
+			// Kullanıcıyı kaydet
+			var entity = _mapper.Map<EmployeeRegisterDTO, Employee>(dto);
+			var data = await _unitOfWork.AuthRepository.Register(entity, password);
 
-            return new SuccessDataResult<EmployeeRegisterDTO>(dto, "Kullanıcı kaydedildi");
-        }
+			if (data == null)
+			{
+				return new ErrorDataResult<EmployeeRegisterDTO>("Bir hata oluştu");
+			}
+
+			return new SuccessDataResult<EmployeeRegisterDTO>(dto, "Kullanıcı kaydedildi");
+		}
 
 
-    }
+	}
 }

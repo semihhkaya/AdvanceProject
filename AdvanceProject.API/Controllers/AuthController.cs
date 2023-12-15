@@ -45,8 +45,9 @@ namespace AdvanceProject.API.Controllers
 			var data = _authManager.Login(dto);
 			if (data.Result.Data != null)
 			{
-				var token = GenerateJwtToken(data.Result.Data.Name); // Kullanıcı adını tokena ekleyin
-				return Ok(new { User = data.Result.Data, Token = token });
+				var token = GenerateJwtToken(data.Result.Data.Name); // Kullanıcı adını tokena ekle
+				data.Result.Data.Token = token;
+				return Ok(data.Result.Data);
 			}
 
 			return BadRequest(data.Result.Message);
@@ -61,7 +62,7 @@ namespace AdvanceProject.API.Controllers
 			{
 				Audience = "BilgeAdam",
 				Issuer = "Semih",
-				Expires = DateTime.Now.AddMinutes(20),
+				Expires = DateTime.Now.AddMinutes(1),
 				Subject = new ClaimsIdentity(new Claim[] {
 			new Claim(ClaimTypes.Name, userName)
 		}),

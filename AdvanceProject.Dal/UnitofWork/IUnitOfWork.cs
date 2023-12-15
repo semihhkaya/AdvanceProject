@@ -13,6 +13,8 @@ namespace AdvanceProject.Dal.UnitofWork
         IEmployeeRepository EmployeeRepository { get; }
         IBusinessUnitRepository BusinessUnitRepository { get; }
         ITitleRepository TitleRepository { get; }
+        IAdvanceRepository AdvanceRepository { get; }
+        IProjectRepository ProjectRepository { get; }
         
         
         void Commit();

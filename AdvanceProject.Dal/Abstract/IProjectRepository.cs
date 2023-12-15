@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace AdvanceProject.Dal.Abstract
 {
-	public interface IAdvanceRepository
+	public interface IProjectRepository
 	{
-		Task<Advance> AddAdvance(Advance advance);
+		Task<List<Project>> GetAll();
 	}
 }

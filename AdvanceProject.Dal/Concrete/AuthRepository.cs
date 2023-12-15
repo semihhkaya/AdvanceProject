@@ -45,19 +45,31 @@ namespace AdvanceProject.Dal.Concrete
 		public async Task<Employee> Login(string email, string password)
 		{
 			
-			var sqlquery = "SELECT * FROM Employee WHERE Email = @Email";
-			var parameters = new DynamicParameters();
-			parameters.Add("@Email", email, DbType.String);
+            string query = @"SELECT e.ID,e.Email,e.PasswordHash,e.PasswordSalt,e.TitleID,e.BusinessUnitID,e.Name,e.Surname,e.PhoneNumber,
+                            t.ID,t.TitleName,
+                            bu.ID,bu.BusinessUnitName
+                            FROM Employee e
+                            JOIN Title t on t.ID = e.TitleID
+                            JOIN BusinessUnit bu on bu.ID = e.BusinessUnitID
+                            WHERE Email=@Email";
 
-			var user = await Connection.QueryFirstOrDefaultAsync<Employee>(sqlquery, parameters, Transaction);
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("@Email", email, DbType.String);
+
+            var user = await Connection.QueryAsync<Employee, Title,BusinessUnit, Employee>(query, (employee, title, businessunit) => 
+            {
+                employee.Title = title;
+                employee.BusinessUnit = businessunit;
+                return employee;
+            }, parameters);
 
 			// Kullanıcı bulunamazsa veya şifre kontrolü başarısızsa null döndür
-			if (user == null || !PasswordControl(password, user.PasswordSalt, user.PasswordHash))
+			if (user == null || !PasswordControl(password, user.FirstOrDefault().PasswordSalt, user.FirstOrDefault().PasswordHash))
 			{
 				return null;
 			}
 			
-			return user;
+			return user.FirstOrDefault();
 		}
 
 		private bool PasswordControl(string password, byte[] passSalt, byte[] passwordHash)

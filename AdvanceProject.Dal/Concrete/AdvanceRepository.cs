@@ -1,6 +1,7 @@
 ﻿using AdvanceProject.Core.Entities;
 using AdvanceProject.Dal.Abstract;
 using AdvanceProject.Dal.Base;
+using AdvanceProject.Dto.Advance;
 using Dapper;
 using System;
 using System.Collections.Generic;
@@ -49,6 +50,23 @@ namespace AdvanceProject.Dal.Concrete
 			return advance;
 
 		}
-		//Avans repo
+	
+
+		public List<EmployeeAdvanceResponseDto> GetAdvanceListData(int employeeId)
+		{
+			var sql = @"SELECT a.ID as 'AdvanceID', a.AdvanceAmount, a.AdvanceDescription, a.DesiredDate, a.RequestDate, a.ProjectID, p.ProjectName,	a.StatusID, s.StatusName, a.EmployeeID, e.Name as 'EmployeeName', e.Surname
+						FROM Advance a join Project p on p.ID = a.ProjectID
+						JOIN Status s on s.ID = a.StatusID
+						JOIN Employee e on e.ID = a.EmployeeID Where a.EmployeeID = @EmployeeId";
+
+			var parameter = new DynamicParameters();
+			parameter.Add("@EmployeeId", employeeId, DbType.Int32);
+
+			var results = Connection.Query<EmployeeAdvanceResponseDto>(sql,parameter);
+			List<EmployeeAdvanceResponseDto> data = results.ToList();
+
+			return data;
+		}
+
 	}
 }

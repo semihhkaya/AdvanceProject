@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AdvanceProject.Core\AdvanceProject.Core.csproj" />
+    <ProjectReference Include="..\AdvanceProject.Dto\AdvanceProject.Dto.csproj" />
   </ItemGroup>
 
 </Project>

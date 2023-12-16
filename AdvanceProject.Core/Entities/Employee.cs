@@ -18,7 +18,7 @@ namespace AdvanceProject.Core.Entities
             //Advances = new HashSet<Advance>();
         }
 
-        public int Id { get; set; }
+        public int Id{ get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
         public string PhoneNumber { get; set; }

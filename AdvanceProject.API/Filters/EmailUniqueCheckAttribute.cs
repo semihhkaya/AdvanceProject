@@ -18,21 +18,18 @@ namespace AdvanceProject.API.Filters
 
             var unitOfWork = (IUnitOfWork)context.HttpContext.RequestServices.GetService(typeof(IUnitOfWork));
 
-
-            // E-posta adresi al
             if (context.ActionArguments.TryGetValue("dto", out object dtoObject) &&
                 dtoObject is EmployeeRegisterDTO dto)
             {
                 var existingUser = await employeeManager.GetUserByMail(dto.Email);
                 if (existingUser.Success)
                 {
-                    //zaten kayıtlı ise
                     context.Result = new BadRequestObjectResult(existingUser.Message);
+
                     return;
                 }
             }
 
-            // Eğer e-posta kontrolü başarılı ise işleme devam et
             await base.OnActionExecutionAsync(context, next);
         }
 	}

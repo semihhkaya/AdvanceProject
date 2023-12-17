@@ -68,5 +68,18 @@ namespace AdvanceProject.Dal.Concrete
 			return data;
 		}
 
+		public List<AdvanceDetailDTO> GetAdvanceDetails(int advanceId)
+		{
+			var sql = @"Select ah.AdvanceID, a.AdvanceAmount, a.AdvanceDescription,s.ID 'StatusID',s.StatusName,e.Name AS 'EmployeeName',e.Surname,ah.TransactorID, ah.ApprovedAmount,ah.Date ,em.Name 'UpperEmployeeName',em.ID 'UpperEmployeeId',p.DeterminedPaymentDate,r.ReceiptNo from AdvanceHistory ah LEFT join Advance a on a.ID = ah.AdvanceID LEFT join Status s on s.ID = ah.StatusID LEFT join Employee e on e.ID = ah.TransactorID LEFT join Payment p on p.AdvanceID = ah.AdvanceID LEFT join Receipt r on r.AdvanceID = ah.AdvanceID LEFT join Employee em on em.ID = e.UpperEmployeeID Where ah.AdvanceID = @AdvanceID";
+
+			var parameter = new DynamicParameters();
+			parameter.Add("@AdvanceID", advanceId, DbType.Int32);
+
+			var results = Connection.Query<AdvanceDetailDTO>(sql, parameter);
+			List<AdvanceDetailDTO> data = results.ToList();
+
+			return data;
+		}
+
 	}
 }

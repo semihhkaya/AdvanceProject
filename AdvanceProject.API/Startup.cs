@@ -6,25 +6,20 @@ using AdvanceProject.Dal.UnitofWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AdvanceProject.API
 {
-    public class Startup
+	public class Startup
     {
         public Startup(IConfiguration configuration)
         {
+
             Configuration = configuration;
         }
 
@@ -39,6 +34,8 @@ namespace AdvanceProject.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AdvanceProject.API", Version = "v1" });
             });
+
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IAuthManager, AuthManager>();
             services.AddScoped<IEmployeeManager, EmployeeManager>();
             services.AddScoped<IBusinessUnitManager, BusinessUnitManager>();
@@ -46,25 +43,21 @@ namespace AdvanceProject.API
             services.AddScoped<IAdvanceManager, AdvanceManager>();
             services.AddScoped<IAdvanceHistoryManager, AdvanceHistoryManager>();
             services.AddScoped<IProjectManager, ProjectManager>();
-
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddScoped<MyMapper>();
 
-            var gizlibilgi = Encoding.ASCII.GetBytes(Configuration.GetSection("apisecretkey").Value);
+            var apiSecretKey = Encoding.ASCII.GetBytes(Configuration.GetSection("apisecretkey").Value);
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
             {
-
                 opt.TokenValidationParameters = new TokenValidationParameters()
                 {
-                    IssuerSigningKey = new SymmetricSecurityKey(gizlibilgi),
+                    IssuerSigningKey = new SymmetricSecurityKey(apiSecretKey),
                     ValidateIssuer = true,
                     ValidateIssuerSigningKey = true,
                     ValidateAudience = true,
                     ValidAudience = "BilgeAdam",
                     ValidIssuer = "Semih"
                 };
-
             });
 
             services.AddAuthorization();
@@ -81,10 +74,8 @@ namespace AdvanceProject.API
             }
 
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

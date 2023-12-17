@@ -13,5 +13,6 @@ namespace AdvanceProject.Dal.Abstract
 	{
 		Task<Advance> AddAdvance(Advance advance);
 		List<EmployeeAdvanceResponseDto> GetAdvanceListData(int employeeId);
+		List<AdvanceDetailDTO> GetAdvanceDetails(int advanceId);
 	}
 }

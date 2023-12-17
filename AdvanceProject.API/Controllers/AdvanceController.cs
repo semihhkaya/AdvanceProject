@@ -41,5 +41,20 @@ namespace AdvanceProject.API.Controllers
 
 			return Ok(result);
 		}
+
+		[HttpGet("~/api/getadvancedetails")]
+		public async Task<IActionResult> GetAdvanceDetails([FromQuery] int advanceId)
+		{
+			//var data = await _advanceManager.GetAdvanceByEmployeeId(employeeId);
+			var data = _advanceManager.GetAdvanceDetails(advanceId);
+
+			List<AdvanceDetailDTO> result = new List<AdvanceDetailDTO>();
+			foreach (var item in data.Data.ToList())
+			{
+				result.Add(item);
+			}
+
+			return Ok(result);
+		}
 	}
 }

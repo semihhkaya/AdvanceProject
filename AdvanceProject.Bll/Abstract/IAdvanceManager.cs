@@ -14,5 +14,6 @@ namespace AdvanceProject.Bll.Abstract
 		Task<IDataResult<AdvanceInsertDTO>> AddAdvance(AdvanceInsertDTO dto);
 		
 		IDataResult<List<EmployeeAdvanceResponseDto>> GetAdvanceListData(int employeeId);
+		IDataResult<List<AdvanceDetailDTO>> GetAdvanceDetails(int advanceId);
 	}
 }

@@ -37,7 +37,16 @@ namespace AdvanceProject.Bll.Concrete
 			return new SuccessDataResult<AdvanceInsertDTO>(dto, "Avans eklendi");
 		}
 
+		public IDataResult<List<AdvanceDetailDTO>> GetAdvanceDetails(int advanceId)
+		{
+			var data = _unitOfWork.AdvanceRepository.GetAdvanceDetails(advanceId);
+			if (data == null)
+			{
+				return new ErrorDataResult<List<AdvanceDetailDTO>>(null, "Data bulunamadı");
+			}
 
+			return new SuccessDataResult<List<AdvanceDetailDTO>>(data);
+		}
 
 		public IDataResult<List<EmployeeAdvanceResponseDto>> GetAdvanceListData(int employeeId)
 		{

@@ -15,5 +15,12 @@ namespace AdvanceProject.Bll.Abstract
 		
 		IDataResult<List<EmployeeAdvanceResponseDto>> GetAdvanceListData(int employeeId);
 		IDataResult<List<AdvanceDetailDTO>> GetAdvanceDetails(int advanceId);
+
+		Task<IDataResult<List<AdvanceConfirmDTO>>> GetAdvanceConfirmEmployee(int employeeId);
+		IDataResult<List<int>> GetTitleID(decimal advanceAmount);
+
+		IDataResult<List<AdvanceOrderConfirmDTO>> GetAdvanceOrderConfirm(int businessUnitId, List<int> titles);
+		IDataResult<List<AdvanceApprovedEmployeeDTO>> GetAdvanceApproveEmployee(int advanceID, List<int> titles);
+		Task<IDataResult<AdanceHistoryApproveDTO>> AddAdvanceHistoryApprove(AdanceHistoryApproveDTO dto);
 	}
 }

@@ -13,4 +13,8 @@
     <ProjectReference Include="..\AdvanceProject.Bll\AdvanceProject.Bll.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Contract\Response\" />
+  </ItemGroup>
+
 </Project>

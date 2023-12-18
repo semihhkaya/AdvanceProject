@@ -50,7 +50,7 @@ namespace AdvanceProject.Dal.Concrete
 			return advance;
 
 		}
-	
+
 
 		public List<EmployeeAdvanceResponseDto> GetAdvanceListData(int employeeId)
 		{
@@ -62,7 +62,7 @@ namespace AdvanceProject.Dal.Concrete
 			var parameter = new DynamicParameters();
 			parameter.Add("@EmployeeId", employeeId, DbType.Int32);
 
-			var results = Connection.Query<EmployeeAdvanceResponseDto>(sql,parameter);
+			var results = Connection.Query<EmployeeAdvanceResponseDto>(sql, parameter);
 			List<EmployeeAdvanceResponseDto> data = results.ToList();
 
 			return data;
@@ -81,5 +81,104 @@ namespace AdvanceProject.Dal.Concrete
 			return data;
 		}
 
+		public List<AdvanceConfirmDTO> GetAdvanceConfirmEmployee(int employeeId)
+		{
+			var sql = @"select ah.AdvanceID,ee.Name 'EmployeeName' ,ee.Surname 'EmployeeSurname',bu.BusinessUnitName 'EmployeeBusinessUnit',t.TitleName 'EmployeeTitle',a.AdvanceDescription,ah.StatusID,a.AdvanceAmount,a.RequestDate,a.DesiredDate, e.Name'TransactorName',e.Surname'TransactorSurname',t2.TitleName 'TransactorTitleName',s.StatusName 'LastStatusName',ah.ApprovedAmount,uppere.Name 'NextTransactorEmployeeName',uppere.Surname 'NextTransactorEmployeeSurname',t3.TitleName 'NextTransactorEmployeeTitle',t3.ID 'NextTransactorEmployeeTitleID' from AdvanceHistory ah
+			  JOIN Employee e on e.ID = ah.TransactorID 
+			  JOIN Employee uppere on uppere.ID = e.UpperEmployeeID 
+			  join Advance a on a.ID=ah.AdvanceID
+			  join Employee ee on ee.ID=a.EmployeeID 
+              join Status s on s.ID = ah.StatusID
+			  join BusinessUnit bu on bu.ID = ee.BusinessUnitID
+              join Title t on t.ID = ee.TitleID
+			  join Title t2 on t2.ID = e.TitleID
+			  join Status sa on sa.ID = a.StatusID
+			  join Title t3 on t3.ID = uppere.TitleID
+			  where uppere.ID = @EmployeeId";
+
+			var parameter = new DynamicParameters();
+			parameter.Add("@EmployeeId", employeeId, DbType.Int32);
+
+			var results = Connection.Query<AdvanceConfirmDTO>(sql, parameter);
+			List<AdvanceConfirmDTO> data = results.ToList();
+
+			return data;
+		}
+
+		//  -- 5000 TL'lik gelen avans tutarını hangi TitleId'ler onaylayacak? avans tutarı ile birlikte rule gittim hangi rule id'lerin bu miktarı onaylayacağını buldum 
+		// Example Output : TitleId[4, 3]
+		public List<int> GetTitleID(decimal advanceAmount)
+		{
+			var sql = @"SELECT TitleID FROM [Rule] WHERE MinAmount <= @AdvanceAmount ORDER BY MaxAmount";
+
+			var parameter = new DynamicParameters();
+			parameter.Add("@AdvanceAmount", advanceAmount, DbType.Int32);
+
+			var results = Connection.Query<int>(sql, parameter);
+
+			return results.ToList();
+
+		}
+		//Bu avansı sırası ile kimler onaylayacak?
+		public List<AdvanceOrderConfirmDTO> GetAdvanceOrderConfirm(int businessUnitId, List<int> titles)
+		{
+			var sql = @"
+			SELECT e.ID AS EmployeeID, e.Name AS EmployeeName, e.Surname AS EmployeeSurname, e.TitleID, t.TitleName
+			FROM Employee e
+			JOIN Title t ON e.TitleID = t.ID
+			WHERE e.TitleID IN @TitleIDs AND e.BusinessUnitID = @BusinessUnitID
+			ORDER BY t.ID";
+
+			var parameters = new
+			{
+				TitleIDs = titles,
+				BusinessUnitID = businessUnitId
+			};
+
+
+			var results = Connection.Query<AdvanceOrderConfirmDTO>(sql, parameters);
+
+			return results.ToList();
+		}
+
+		//  -- Bir avansı hangi kişilerin onayladığını gösterir 
+		public List<AdvanceApprovedEmployeeDTO> GetAdvanceApproveEmployee(int advanceID, List<int> titles)
+		{
+			var sql = @"
+                SELECT s.ID as StatusId, s.StatusName, e.Name as ApprovedEmployeeName, e.TitleID as TitleId, e.BusinessUnitID, a.AdvanceID,a.TransactorID
+                FROM Status s  
+                JOIN AdvanceHistory a ON s.ID = a.StatusID
+                JOIN Employee e ON e.ID = a.TransactorID
+                WHERE AdvanceID = @AdvanceID
+                AND e.TitleID IN @TitleIDs";
+
+			var parameters = new
+			{
+				TitleIDs = titles,
+				AdvanceID = advanceID
+			};
+
+
+			var results = Connection.Query<AdvanceApprovedEmployeeDTO>(sql, parameters);
+
+			return results.ToList();
+		}
+
+		public async Task<AdanceHistoryApproveDTO> AddAdvanceHistoryApprove(AdanceHistoryApproveDTO dto)
+		{
+			var sql = @"Insert into AdvanceHistory (StatusID,AdvanceID,TransactorID,ApprovedAmount,Date) VALUES (@StatusID,@AdvanceID,@TransactorID,@ApprovedAmount,@Date)";
+			
+			var parameters = new DynamicParameters();
+			parameters.Add("@StatusID", dto.StatusID, DbType.Int32);
+			parameters.Add("@AdvanceID", dto.AdvanceID, DbType.Int32);
+			parameters.Add("@TransactorID", dto.TransactorID, DbType.Int32);
+			parameters.Add("@ApprovedAmount", dto.AdvanceAmount, DbType.Decimal); 
+			parameters.Add("@Date", DateTime.Now, DbType.DateTime); 
+
+
+			int rowsAffected = await Connection.ExecuteAsync(sql, parameters);
+
+			return dto;
+		}
 	}
 }

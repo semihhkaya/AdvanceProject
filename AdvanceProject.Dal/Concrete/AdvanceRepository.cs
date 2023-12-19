@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AdvanceProject.Dal.Concrete
@@ -30,7 +29,7 @@ namespace AdvanceProject.Dal.Concrete
 			parameters.Add("@ProjectID", advance.ProjectId, DbType.Int32);
 			parameters.Add("@DesiredDate", advance.DesiredDate, DbType.DateTime); //Şirketin ödicem dediği tarih
 			parameters.Add("@RequestDate", DateTime.Now, DbType.DateTime); //İstenen tarih şu an
-			parameters.Add("@StatusID", 101, DbType.Int32);
+			parameters.Add("@StatusID", 201, DbType.Int32);
 			parameters.Add("@EmployeeID", advance.EmployeeId, DbType.Int32);
 
 			int AdvanceId = await Connection.ExecuteScalarAsync<int>(query, parameters, Transaction);
@@ -167,18 +166,64 @@ namespace AdvanceProject.Dal.Concrete
 		public async Task<AdanceHistoryApproveDTO> AddAdvanceHistoryApprove(AdanceHistoryApproveDTO dto)
 		{
 			var sql = @"Insert into AdvanceHistory (StatusID,AdvanceID,TransactorID,ApprovedAmount,Date) VALUES (@StatusID,@AdvanceID,@TransactorID,@ApprovedAmount,@Date)";
-			
+
 			var parameters = new DynamicParameters();
 			parameters.Add("@StatusID", dto.StatusID, DbType.Int32);
 			parameters.Add("@AdvanceID", dto.AdvanceID, DbType.Int32);
 			parameters.Add("@TransactorID", dto.TransactorID, DbType.Int32);
-			parameters.Add("@ApprovedAmount", dto.AdvanceAmount, DbType.Decimal); 
-			parameters.Add("@Date", DateTime.Now, DbType.DateTime); 
-
+			parameters.Add("@ApprovedAmount", dto.AdvanceAmount, DbType.Decimal);
+			parameters.Add("@Date", DateTime.Now, DbType.DateTime);
 
 			int rowsAffected = await Connection.ExecuteAsync(sql, parameters);
 
 			return dto;
+		}
+
+
+		public async Task<bool> GetAdvanceChangeStatus(int advanceId, int nowStatus)
+		{
+			var sql = @"Update Advance Set StatusID = @StatusID Where ID = @AdvanceID";
+
+			var parameters = new DynamicParameters();
+			parameters.Add("@StatusID", nowStatus, DbType.Int32);
+			parameters.Add("@AdvanceID", advanceId, DbType.Int32);
+
+			int rowsAffected = await Connection.ExecuteAsync(sql, parameters);
+			if (rowsAffected > 0)
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		public async Task<List<UserAdvanceListDTO>> GetUserAdvanceList(int employeeId, int businessUnitID)
+		{
+			var sql = @"SELECT a.ID as AdvanceID, e.Name, e.Surname, t.TitleName, a.StatusID as AdvanceStatusID, s.StatusName, a.RequestDate, a.DesiredDate, a.AdvanceAmount
+							FROM Advance a JOIN Employee e ON e.ID = a.EmployeeID
+							JOIN Title t ON t.ID = e.TitleID
+							JOIN Status s ON s.ID = a.StatusID
+							WHERE a.StatusID = (
+								SELECT (s.ID-1)
+								FROM Employee e 
+								JOIN Title t ON e.TitleID = t.ID 
+								JOIN Status s ON s.TitleID = t.ID
+								WHERE e.ID = @EmployeeID AND e.BusinessUnitID = @BusinnesUnitID
+												)";
+
+			var parameters = new DynamicParameters();
+			parameters.Add("@BusinnesUnitID", businessUnitID, DbType.Int32);
+			parameters.Add("@EmployeeID", employeeId, DbType.Int32);
+
+
+			var data = await Connection.QueryAsync<UserAdvanceListDTO>(sql, parameters);
+
+			if (data != null)
+			{
+				return data.ToList();
+			}
+
+			return new List<UserAdvanceListDTO>();
 		}
 	}
 }

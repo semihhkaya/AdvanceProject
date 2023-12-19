@@ -110,5 +110,19 @@ namespace AdvanceProject.Bll.Concrete
 
 			return new SuccessDataResult<AdanceHistoryApproveDTO>(advance, "Avans eklendi");
 		}
+
+		public async Task<IDataResult<bool>> GetAdvanceChangeStatus(int advanceId, int nowStatus)
+		{
+			var data = await  _unitOfWork.AdvanceRepository.GetAdvanceChangeStatus(advanceId, nowStatus);
+
+			return new SuccessDataResult<bool>("Avans eklendi");
+		}
+
+		public async Task<IDataResult<List<UserAdvanceListDTO>>> GetUserAdvanceList(int employeeId, int businessUnitID)
+		{
+			var data = await _unitOfWork.AdvanceRepository.GetUserAdvanceList(employeeId, businessUnitID);
+
+			return new SuccessDataResult<List<UserAdvanceListDTO>>(data,"Liste getirildi");
+		}
 	}
 }

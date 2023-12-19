@@ -1,11 +1,5 @@
 ﻿using AdvanceProject.Bll.Abstract;
-using AdvanceProject.Dto.Title;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AdvanceProject.API.Controllers
 {

@@ -22,5 +22,8 @@ namespace AdvanceProject.Bll.Abstract
 		IDataResult<List<AdvanceOrderConfirmDTO>> GetAdvanceOrderConfirm(int businessUnitId, List<int> titles);
 		IDataResult<List<AdvanceApprovedEmployeeDTO>> GetAdvanceApproveEmployee(int advanceID, List<int> titles);
 		Task<IDataResult<AdanceHistoryApproveDTO>> AddAdvanceHistoryApprove(AdanceHistoryApproveDTO dto);
+		Task<IDataResult<bool>> GetAdvanceChangeStatus(int advanceId, int nowStatus);
+
+		Task<IDataResult<List<UserAdvanceListDTO>>> GetUserAdvanceList(int employeeId, int businessUnitID);
 	}
 }

@@ -3,6 +3,7 @@ using AdvanceProject.Bll.Abstract;
 using AdvanceProject.Dto.Employee;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -17,10 +18,12 @@ namespace AdvanceProject.API.Controllers
 	{
 		private readonly IAuthManager _authManager;
 		private readonly IConfiguration _configuration;
-		public AuthController(IAuthManager authManager, IConfiguration configuration)
+		private readonly ILogger<AuthController> _logger;
+		public AuthController(IAuthManager authManager, IConfiguration configuration,ILogger<AuthController> logger)
 		{
 			_authManager = authManager;
 			_configuration = configuration;
+			_logger = logger;
 		}
 
 		[EmailUniqueCheckAttribute]
@@ -30,8 +33,10 @@ namespace AdvanceProject.API.Controllers
 			var data = _authManager.Register(dto, dto.Password);
 			if (data.Result.Data != null)
 			{
+				_logger.LogInformation("Kullanıcı kaydedildi");
 				return Ok(data.Result.Data);
 			}
+			_logger.LogInformation("Kullanıcı kaydedilirken bir hata meydana geldi", data);
 			return BadRequest(data.Result.Message);
 		}
 
@@ -42,11 +47,16 @@ namespace AdvanceProject.API.Controllers
 			if (data.Result.Data != null)
 			{
 				var token = GenerateJwtToken(data.Result.Data.Name);
+				if (token!=null)
+				{
+					_logger.LogInformation("Token üretildi");
+				}
 				data.Result.Data.Token = token;
 
+				_logger.LogInformation("Giriş başarılı");
 				return Ok(data.Result.Data);
 			}
-
+			_logger.LogError("Giriş başarısız oldu", data.Result.Message);
 			return BadRequest(data.Result.Message);
 		}
 

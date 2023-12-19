@@ -64,7 +64,11 @@ namespace AdvanceProject.Dal.Concrete
             }, parameters);
 
 			// Kullanıcı bulunamazsa veya şifre kontrolü başarısızsa null döndür
-			if (user == null || !PasswordControl(password, user.FirstOrDefault().PasswordSalt, user.FirstOrDefault().PasswordHash))
+			if (user.Count()==0)
+			{
+				return null;
+			}
+			if (!PasswordControl(password, user.FirstOrDefault().PasswordSalt, user.FirstOrDefault().PasswordHash))
 			{
 				return null;
 			}

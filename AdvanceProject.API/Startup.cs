@@ -35,16 +35,16 @@ namespace AdvanceProject.API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AdvanceProject.API", Version = "v1" });
             });
 
+
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IAuthManager, AuthManager>();
             services.AddScoped<IEmployeeManager, EmployeeManager>();
             services.AddScoped<IBusinessUnitManager, BusinessUnitManager>();
             services.AddScoped<ITitleManager, TitleManager>();
             services.AddScoped<IAdvanceManager, AdvanceManager>();
-            services.AddScoped<IAdvanceHistoryManager, AdvanceHistoryManager>();
             services.AddScoped<IProjectManager, ProjectManager>();
             services.AddScoped<MyMapper>();
-
+            
             var apiSecretKey = Encoding.ASCII.GetBytes(Configuration.GetSection("apisecretkey").Value);
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
@@ -72,7 +72,7 @@ namespace AdvanceProject.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AdvanceProject.API v1"));
             }
-
+            
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

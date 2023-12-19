@@ -1,11 +1,7 @@
 ﻿using AdvanceProject.Core.Entities;
 using AdvanceProject.Dto.Advance;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using static AdvanceProject.Dal.Concrete.AdvanceRepository;
 
 namespace AdvanceProject.Dal.Abstract
 {
@@ -22,7 +18,8 @@ namespace AdvanceProject.Dal.Abstract
 		List<AdvanceApprovedEmployeeDTO> GetAdvanceApproveEmployee(int advanceID, List<int> titles);
 
 		Task<AdanceHistoryApproveDTO> AddAdvanceHistoryApprove(AdanceHistoryApproveDTO dto);
+		Task<bool> GetAdvanceChangeStatus(int advanceId, int nowStatus);
 
-
+		Task<List<UserAdvanceListDTO>> GetUserAdvanceList(int employeeId, int businessUnitID);
 	}
 }
